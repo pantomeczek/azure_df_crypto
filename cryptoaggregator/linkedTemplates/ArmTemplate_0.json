@@ -1,0 +1,616 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "cryptoaggregator"
+		},
+		"BlobTransactions_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'BlobTransactions'"
+		},
+		"ZondaTransactions_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ZondaTransactions'"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/BlobTransactions')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('BlobTransactions_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ZondaTransactions')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('ZondaTransactions_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BinanceInputTransactions')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ZondaTransactions",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "part-00000-100add6a-7908-464e-9995-18cce10cb969-c000.csv",
+						"container": "binance-input"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Date(UTC)",
+						"type": "String"
+					},
+					{
+						"name": "OrderNo",
+						"type": "String"
+					},
+					{
+						"name": "Pair",
+						"type": "String"
+					},
+					{
+						"name": "Type",
+						"type": "String"
+					},
+					{
+						"name": "Side",
+						"type": "String"
+					},
+					{
+						"name": "Order Price",
+						"type": "String"
+					},
+					{
+						"name": "Order Amount",
+						"type": "String"
+					},
+					{
+						"name": "Time",
+						"type": "String"
+					},
+					{
+						"name": "Executed",
+						"type": "String"
+					},
+					{
+						"name": "Average Price",
+						"type": "String"
+					},
+					{
+						"name": "Trading total",
+						"type": "String"
+					},
+					{
+						"name": "Status",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ZondaTransactions')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CryptocomInputTransactions')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ZondaTransactions",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "SPOT_ORDER.csv",
+						"container": "cryptocom-input"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Order ID",
+						"type": "String"
+					},
+					{
+						"name": "Time (UTC)",
+						"type": "String"
+					},
+					{
+						"name": "Pair",
+						"type": "String"
+					},
+					{
+						"name": "Order Type",
+						"type": "String"
+					},
+					{
+						"name": "Side",
+						"type": "String"
+					},
+					{
+						"name": "Order Amount",
+						"type": "String"
+					},
+					{
+						"name": "Average Price",
+						"type": "String"
+					},
+					{
+						"name": "Deal Volume",
+						"type": "String"
+					},
+					{
+						"name": "Total",
+						"type": "String"
+					},
+					{
+						"name": "Trigger Condition",
+						"type": "String"
+					},
+					{
+						"name": "Status",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ZondaTransactions')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/KursyWalut')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ZondaTransactions",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "kursy_walut_2021_2022.csv",
+						"container": "fxrates"
+					},
+					"columnDelimiter": ";",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "data",
+						"type": "String"
+					},
+					{
+						"name": "1THB",
+						"type": "String"
+					},
+					{
+						"name": "1USD",
+						"type": "String"
+					},
+					{
+						"name": "1AUD",
+						"type": "String"
+					},
+					{
+						"name": "1HKD",
+						"type": "String"
+					},
+					{
+						"name": "1CAD",
+						"type": "String"
+					},
+					{
+						"name": "1NZD",
+						"type": "String"
+					},
+					{
+						"name": "1SGD",
+						"type": "String"
+					},
+					{
+						"name": "1EUR",
+						"type": "String"
+					},
+					{
+						"name": "100HUF",
+						"type": "String"
+					},
+					{
+						"name": "1CHF",
+						"type": "String"
+					},
+					{
+						"name": "1GBP",
+						"type": "String"
+					},
+					{
+						"name": "1UAH",
+						"type": "String"
+					},
+					{
+						"name": "100JPY",
+						"type": "String"
+					},
+					{
+						"name": "1CZK",
+						"type": "String"
+					},
+					{
+						"name": "1DKK",
+						"type": "String"
+					},
+					{
+						"name": "100ISK",
+						"type": "String"
+					},
+					{
+						"name": "1NOK",
+						"type": "String"
+					},
+					{
+						"name": "1SEK",
+						"type": "String"
+					},
+					{
+						"name": "1HRK",
+						"type": "String"
+					},
+					{
+						"name": "1RON",
+						"type": "String"
+					},
+					{
+						"name": "1BGN",
+						"type": "String"
+					},
+					{
+						"name": "1TRY",
+						"type": "String"
+					},
+					{
+						"name": "1ILS",
+						"type": "String"
+					},
+					{
+						"name": "100CLP",
+						"type": "String"
+					},
+					{
+						"name": "1PHP",
+						"type": "String"
+					},
+					{
+						"name": "1MXN",
+						"type": "String"
+					},
+					{
+						"name": "1ZAR",
+						"type": "String"
+					},
+					{
+						"name": "1BRL",
+						"type": "String"
+					},
+					{
+						"name": "1MYR",
+						"type": "String"
+					},
+					{
+						"name": "1RUB",
+						"type": "String"
+					},
+					{
+						"name": "10000IDR",
+						"type": "String"
+					},
+					{
+						"name": "100INR",
+						"type": "String"
+					},
+					{
+						"name": "100KRW",
+						"type": "String"
+					},
+					{
+						"name": "1CNY",
+						"type": "String"
+					},
+					{
+						"name": "1XDR",
+						"type": "String"
+					},
+					{
+						"name": "nr tabeli",
+						"type": "String"
+					},
+					{
+						"name": "pe�ny numer tabeli",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ZondaTransactions')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ZondaInputTransactions')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ZondaTransactions",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "zonda-input"
+					},
+					"columnDelimiter": ";",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "\"Data operacji\";\"Rodzaj\";\"Wartość\";\"Waluta\";\"Saldo całkowite po operacji\"",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ZondaTransactions')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ZondaOutputTransactions')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ZondaTransactions",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "crypto-transactions-output"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ZondaTransactions')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CryptoAggFlow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "ZondaInputTransactions",
+								"type": "DatasetReference"
+							},
+							"name": "ZondaSourceFiles"
+						},
+						{
+							"dataset": {
+								"referenceName": "BinanceInputTransactions",
+								"type": "DatasetReference"
+							},
+							"name": "BinanceSourceFiles"
+						},
+						{
+							"dataset": {
+								"referenceName": "CryptocomInputTransactions",
+								"type": "DatasetReference"
+							},
+							"name": "CryptocomSourceFiles"
+						},
+						{
+							"dataset": {
+								"referenceName": "KursyWalut",
+								"type": "DatasetReference"
+							},
+							"name": "FX"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "ZondaOutputTransactions",
+								"type": "DatasetReference"
+							},
+							"name": "SaveZondaToFile"
+						}
+					],
+					"transformations": [
+						{
+							"name": "CleanZondaData"
+						},
+						{
+							"name": "FormatColumns"
+						},
+						{
+							"name": "RenameColumns"
+						},
+						{
+							"name": "PivotRows"
+						},
+						{
+							"name": "AddSourceCode"
+						},
+						{
+							"name": "CleanBinanceData"
+						},
+						{
+							"name": "ReorganizeBinanceColumns"
+						},
+						{
+							"name": "CleanBinanceColumns"
+						},
+						{
+							"name": "CleanCryptocomData"
+						},
+						{
+							"name": "ReorganizeCryptocomColumns"
+						},
+						{
+							"name": "CleanCryptocomColumns"
+						},
+						{
+							"name": "OrderZondaByDate"
+						},
+						{
+							"name": "OrderBinanceByDate"
+						},
+						{
+							"name": "OrderCryptoComByDate"
+						},
+						{
+							"name": "MergeWithCryptocom"
+						},
+						{
+							"name": "Union1"
+						},
+						{
+							"name": "ChangeDate"
+						},
+						{
+							"name": "FXRates"
+						},
+						{
+							"name": "JoinWithFX"
+						},
+						{
+							"name": "CalcUSD"
+						},
+						{
+							"name": "AddFXToBinance"
+						},
+						{
+							"name": "ConvertBinanceToUSD"
+						}
+					],
+					"script": "source(output(\n\t\t{Data operacji} as timestamp,\n\t\tRodzaj as string,\n\t\t{Wartość} as string,\n\t\tWaluta as string,\n\t\t{Saldo całkowite po operacji} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('hash', 1)) ~> ZondaSourceFiles\nsource(output(\n\t\t{Date(UTC)} as string,\n\t\tOrderNo as string,\n\t\tPair as string,\n\t\tType as string,\n\t\tSide as string,\n\t\t{Order Price} as string,\n\t\t{Order Amount} as string,\n\t\tTime as string,\n\t\tExecuted as string,\n\t\t{Average Price} as string,\n\t\t{Trading total} as string,\n\t\tStatus as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('hash', 1)) ~> BinanceSourceFiles\nsource(output(\n\t\t{Order ID} as string,\n\t\t{Time (UTC)} as string,\n\t\tPair as string,\n\t\t{Order Type} as string,\n\t\tSide as string,\n\t\t{Order Amount} as string,\n\t\t{Average Price} as string,\n\t\t{Deal Volume} as string,\n\t\tTotal as string,\n\t\t{Trigger Condition} as string,\n\t\tStatus as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('hash', 1)) ~> CryptocomSourceFiles\nsource(output(\n\t\tdata as string,\n\t\t{1THB} as string,\n\t\t{1USD} as string,\n\t\t{1AUD} as string,\n\t\t{1HKD} as string,\n\t\t{1CAD} as string,\n\t\t{1NZD} as string,\n\t\t{1SGD} as string,\n\t\t{1EUR} as string,\n\t\t{100HUF} as string,\n\t\t{1CHF} as string,\n\t\t{1GBP} as string,\n\t\t{1UAH} as string,\n\t\t{100JPY} as string,\n\t\t{1CZK} as string,\n\t\t{1DKK} as string,\n\t\t{100ISK} as string,\n\t\t{1NOK} as string,\n\t\t{1SEK} as string,\n\t\t{1HRK} as string,\n\t\t{1RON} as string,\n\t\t{1BGN} as string,\n\t\t{1TRY} as string,\n\t\t{1ILS} as string,\n\t\t{100CLP} as string,\n\t\t{1PHP} as string,\n\t\t{1MXN} as string,\n\t\t{1ZAR} as string,\n\t\t{1BRL} as string,\n\t\t{1MYR} as string,\n\t\t{1RUB} as string,\n\t\t{10000IDR} as string,\n\t\t{100INR} as string,\n\t\t{100KRW} as string,\n\t\t{1CNY} as string,\n\t\t{1XDR} as string,\n\t\t{nr tabeli} as string,\n\t\t{pe�ny numer tabeli} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tpartitionBy('hash', 1)) ~> FX\nZondaSourceFiles filter(contains([\"Pobranie środków z transakcji z rachunku\",\"Otrzymanie środków z transakcji na rachunek\"], #item == Rodzaj),\n\tpartitionBy('hash', 1)) ~> CleanZondaData\nRenameColumns derive(Type = case(Type == 'Pobranie środków z transakcji z rachunku', 'SELL', 'BUY'),\n\t\tAmount = toDecimal(replace(trim(Amount, '-'),',','.'),13,8),\n\t\tJoinDate = toDate(Date),\n\t\tDate = Date,\n\tpartitionBy('hash', 1)) ~> FormatColumns\nCleanZondaData select(mapColumn(\n\t\tDate = {Data operacji},\n\t\tType = Rodzaj,\n\t\tAmount = {Wartość},\n\t\tCurrency = Waluta\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> RenameColumns\nCalcUSD pivot(groupBy(Date),\n\tpivotBy(Type),\n\tAmount = sum(Amount),\n\t\tCurrency = min(Currency),\n\tcolumnNaming: '$N_$V',\n\tlateral: true,\n\tpartitionBy('hash', 1)) ~> PivotRows\nPivotRows derive(Source = toString('Zonda'),\n\tpartitionBy('hash', 1)) ~> AddSourceCode\nBinanceSourceFiles filter(!contains(['CANCELED','UNKNOWN_STATUS'], #item == Status)) ~> CleanBinanceData\nCleanBinanceData derive(Time = toTimestamp(Time,'yyyy-MM-dd HH:mm:ss'),\n\t\tAmount_BUY = toDecimal(replace(regexExtract(iif(Side=='BUY', Executed, {Trading total}), '([0-9.,]+)'),',',''),13,8),\n\t\tAmount_SELL = toDecimal(replace(regexExtract(iif(Side=='BUY', {Trading total}, Executed), '([0-9.,]+)'),',',''),13,8),\n\t\tCurrency_BUY = regexExtract(iif(Side=='BUY', Executed, {Trading total}), '([A-Z]+)'),\n\t\tCurrency_SELL = regexExtract(iif(Side=='BUY', {Trading total}, Executed), '([A-Z]+)'),\n\t\tSource = toString('Binance'),\n\t\tJoinDate = toDate(Time),\n\tpartitionBy('hash', 1)) ~> ReorganizeBinanceColumns\nConvertBinanceToUSD select(mapColumn(\n\t\tDate = Time,\n\t\tAmount_BUY,\n\t\tAmount_SELL,\n\t\tCurrency_BUY,\n\t\tCurrency_SELL,\n\t\tSource\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CleanBinanceColumns\nCryptocomSourceFiles filter(!contains(['CANCELED','UNKNOWN_STATUS'], #item == Status),\n\tpartitionBy('hash', 1)) ~> CleanCryptocomData\nCleanCryptocomData derive({Time (UTC)} = toTimestamp({Time (UTC)},'yyyy-MM-dd HH:mm:ss'),\n\t\tCurrency_BUY = iif(Side=='BUY', regexExtract(Pair,'([A-Z]+)_([A-Z]+)',1), regexExtract(Pair,'([A-Z]+)_([A-Z]+)',2)),\n\t\tCurrency_SELL = iif(Side=='SELL', regexExtract(Pair,'([A-Z]+)_([A-Z]+)',1), regexExtract(Pair,'([A-Z]+)_([A-Z]+)',2)),\n\t\tAmount_BUY = toDecimal(replace(iif(Side=='BUY', {Deal Volume}, Total),',',''),13,8),\n\t\tAmount_SELL = toDecimal(replace(iif(Side=='SELL', {Deal Volume}, Total),',',''),13,8),\n\t\tSource = toString('Cryptocom'),\n\tpartitionBy('hash', 1)) ~> ReorganizeCryptocomColumns\nReorganizeCryptocomColumns select(mapColumn(\n\t\tDate = {Time (UTC)},\n\t\tCurrency_BUY,\n\t\tCurrency_SELL,\n\t\tAmount_BUY,\n\t\tAmount_SELL,\n\t\tSource\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CleanCryptocomColumns\nUnion1 sort(asc(Date, true),\n\tpartitionBy('hash', 1)) ~> OrderZondaByDate\nCleanBinanceColumns sort(asc(Date, true)) ~> OrderBinanceByDate\nCleanCryptocomColumns sort(asc(Date, true)) ~> OrderCryptoComByDate\nOrderBinanceByDate, OrderCryptoComByDate union(byName: true,\n\tpartitionBy('hash', 1))~> MergeWithCryptocom\nAddSourceCode, MergeWithCryptocom union(byName: true)~> Union1\nFX derive(data = toDate(data, 'yyyyMMdd'),\n\t\t{1USD} = toDecimal(replace({1USD},',','.'),8,4),\n\t\t{1EUR} = toDecimal(replace({1EUR},',','.'),8,4),\n\tpartitionBy('hash', 1)) ~> ChangeDate\nChangeDate select(mapColumn(\n\t\tJoinDate = data,\n\t\tUSD = {1USD},\n\t\tEUR = {1EUR}\n\t),\n\tpartitionBy('hash', 1),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> FXRates\nFormatColumns, FXRates join(FormatColumns@JoinDate == FXRates@JoinDate,\n\tjoinType:'left',\n\tpartitionBy('hash', 1),\n\tbroadcast: 'auto')~> JoinWithFX\nJoinWithFX derive(Amount = toDecimal(iif(Currency=='PLN', Amount/iifNull(USD,3.95), Amount), 13,8),\n\t\tCurrency = iif(Currency=='PLN', 'USDT', Currency)) ~> CalcUSD\nReorganizeBinanceColumns, FXRates join(ReorganizeBinanceColumns@JoinDate == FXRates@JoinDate,\n\tjoinType:'left',\n\tpartitionBy('hash', 1),\n\tbroadcast: 'auto')~> AddFXToBinance\nAddFXToBinance derive(Amount_BUY = toDecimal(iif(Currency_BUY=='EUR', (Amount_BUY*iifNull(EUR,4.51))/iifNull(USD,3.95), Amount_BUY),13,8),\n\t\tAmount_SELL = toDecimal(iif(Currency_SELL=='EUR', (Amount_SELL*iifNull(EUR,4.51))/iifNull(USD,3.95), Amount_SELL),13,8),\n\t\tCurrency_BUY = iif(Currency_BUY=='EUR', 'USDT', Currency_BUY),\n\t\tCurrency_SELL = iif(Currency_SELL=='EUR', 'USDT', Currency_SELL)) ~> ConvertBinanceToUSD\nOrderZondaByDate sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tpartitionFileNames:['all_transactions_aggregated.csv'],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> SaveZondaToFile"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ZondaInputTransactions')]",
+				"[concat(variables('factoryId'), '/datasets/BinanceInputTransactions')]",
+				"[concat(variables('factoryId'), '/datasets/CryptocomInputTransactions')]",
+				"[concat(variables('factoryId'), '/datasets/KursyWalut')]",
+				"[concat(variables('factoryId'), '/datasets/ZondaOutputTransactions')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CryptoTransactionsAggregator')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "AggTransactions",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "1.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CryptoAggFlow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ZondaSourceFiles": {},
+									"BinanceSourceFiles": {},
+									"CryptocomSourceFiles": {},
+									"FX": {},
+									"SaveZondaToFile": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2022-02-08T21:10:54Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/CryptoAggFlow')]"
+			]
+		}
+	]
+}

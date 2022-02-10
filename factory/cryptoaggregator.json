@@ -3,7 +3,7 @@
 	"location": "northeurope",
 	"identity": {
 		"type": "SystemAssigned",
-		"principalId": "d15f5d44-ef28-4f3a-bb81-869a35b3dce8",
+		"principalId": "58e63b57-9e73-403d-8d3b-0457c58b3bfb",
 		"tenantId": "4626e405-1c6c-4404-a72c-1b88c37a8087"
 	}
 }

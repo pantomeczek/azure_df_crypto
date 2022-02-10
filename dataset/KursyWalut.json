@@ -1,0 +1,177 @@
+{
+	"name": "KursyWalut",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ZondaTransactions",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "kursy_walut_2021_2022.csv",
+				"container": "fxrates"
+			},
+			"columnDelimiter": ";",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "data",
+				"type": "String"
+			},
+			{
+				"name": "1THB",
+				"type": "String"
+			},
+			{
+				"name": "1USD",
+				"type": "String"
+			},
+			{
+				"name": "1AUD",
+				"type": "String"
+			},
+			{
+				"name": "1HKD",
+				"type": "String"
+			},
+			{
+				"name": "1CAD",
+				"type": "String"
+			},
+			{
+				"name": "1NZD",
+				"type": "String"
+			},
+			{
+				"name": "1SGD",
+				"type": "String"
+			},
+			{
+				"name": "1EUR",
+				"type": "String"
+			},
+			{
+				"name": "100HUF",
+				"type": "String"
+			},
+			{
+				"name": "1CHF",
+				"type": "String"
+			},
+			{
+				"name": "1GBP",
+				"type": "String"
+			},
+			{
+				"name": "1UAH",
+				"type": "String"
+			},
+			{
+				"name": "100JPY",
+				"type": "String"
+			},
+			{
+				"name": "1CZK",
+				"type": "String"
+			},
+			{
+				"name": "1DKK",
+				"type": "String"
+			},
+			{
+				"name": "100ISK",
+				"type": "String"
+			},
+			{
+				"name": "1NOK",
+				"type": "String"
+			},
+			{
+				"name": "1SEK",
+				"type": "String"
+			},
+			{
+				"name": "1HRK",
+				"type": "String"
+			},
+			{
+				"name": "1RON",
+				"type": "String"
+			},
+			{
+				"name": "1BGN",
+				"type": "String"
+			},
+			{
+				"name": "1TRY",
+				"type": "String"
+			},
+			{
+				"name": "1ILS",
+				"type": "String"
+			},
+			{
+				"name": "100CLP",
+				"type": "String"
+			},
+			{
+				"name": "1PHP",
+				"type": "String"
+			},
+			{
+				"name": "1MXN",
+				"type": "String"
+			},
+			{
+				"name": "1ZAR",
+				"type": "String"
+			},
+			{
+				"name": "1BRL",
+				"type": "String"
+			},
+			{
+				"name": "1MYR",
+				"type": "String"
+			},
+			{
+				"name": "1RUB",
+				"type": "String"
+			},
+			{
+				"name": "10000IDR",
+				"type": "String"
+			},
+			{
+				"name": "100INR",
+				"type": "String"
+			},
+			{
+				"name": "100KRW",
+				"type": "String"
+			},
+			{
+				"name": "1CNY",
+				"type": "String"
+			},
+			{
+				"name": "1XDR",
+				"type": "String"
+			},
+			{
+				"name": "nr tabeli",
+				"type": "String"
+			},
+			{
+				"name": "pe�ny numer tabeli",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

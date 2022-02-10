@@ -1,0 +1,28 @@
+{
+	"name": "ZondaInputTransactions",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ZondaTransactions",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "zonda-input"
+			},
+			"columnDelimiter": ";",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "\"Data operacji\";\"Rodzaj\";\"Wartość\";\"Waluta\";\"Saldo całkowite po operacji\"",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,73 @@
+{
+	"name": "BinanceInputTransactions",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ZondaTransactions",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "part-00000-100add6a-7908-464e-9995-18cce10cb969-c000.csv",
+				"container": "binance-input"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Date(UTC)",
+				"type": "String"
+			},
+			{
+				"name": "OrderNo",
+				"type": "String"
+			},
+			{
+				"name": "Pair",
+				"type": "String"
+			},
+			{
+				"name": "Type",
+				"type": "String"
+			},
+			{
+				"name": "Side",
+				"type": "String"
+			},
+			{
+				"name": "Order Price",
+				"type": "String"
+			},
+			{
+				"name": "Order Amount",
+				"type": "String"
+			},
+			{
+				"name": "Time",
+				"type": "String"
+			},
+			{
+				"name": "Executed",
+				"type": "String"
+			},
+			{
+				"name": "Average Price",
+				"type": "String"
+			},
+			{
+				"name": "Trading total",
+				"type": "String"
+			},
+			{
+				"name": "Status",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

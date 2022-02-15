@@ -1,0 +1,9 @@
+{
+	"name": "dfcrypto1",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "e706be72-58da-494e-b33c-b5c3f41a4244",
+		"tenantId": "4626e405-1c6c-4404-a72c-1b88c37a8087"
+	}
+}
